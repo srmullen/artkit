@@ -10,3 +10,8 @@ declare namespace App {
 
 
 declare module 'convert-length';
+
+interface SketchOpts {
+  width: number,
+  height: number,
+}
