@@ -1,6 +1,7 @@
 <script lang="ts">
   import Canvas from '$lib/components/Canvas.svelte';
   import sketch from '$lib/sketch/locust_mural';
+  import paper_sizes from '$lib/paper_sizes';
 </script>
 
 <svelte:head>
@@ -10,6 +11,6 @@
 <h1>Artkit</h1>
 
 <Canvas 
-  size={[8.5, 5.5]} 
+  size={paper_sizes.a4} 
   {sketch}
 />

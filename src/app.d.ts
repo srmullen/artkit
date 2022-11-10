@@ -15,3 +15,8 @@ interface SketchOpts {
   width: number,
   height: number,
 }
+
+interface PaperSize {
+	units: string,
+	dimensions: number[],
+}

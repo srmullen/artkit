@@ -3,13 +3,13 @@
   import convert from 'convert-length';
   import paper from 'paper';
 
-  export let size: [number, number];
+  export let size: PaperSize;
   export let sketch: (opts: SketchOpts) => void;
 
   let canvas: HTMLCanvasElement;
 
-  const PAPER_SIZE = size.map(n => {
-    return convert(n, 'in', 'px', { pixelsPerInch: 96 });
+  const PAPER_SIZE = size.dimensions.map(n => {
+    return convert(n, size.units, 'px', { pixelsPerInch: 96 });
   });
   const [width, height] = PAPER_SIZE;
 
