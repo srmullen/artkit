@@ -3,6 +3,16 @@ import { randomInt } from 'mathjs';
 export const lerp = (x: number, y: number, a: number) => 
   x * (1 - a) + y * a;
 
+// Cosine interpolation
+export function cerp(from: number, to: number, val: number) {
+  return lerp(from, to, -Math.cos(Math.PI * val) / 2 + 0.5);
+}
+
+// Smooth step interpolation
+export function smoothStep(from: number, to: number, val: number) {
+  return lerp(from, to, val * val * (3 - 2 * val));
+}
+
 export const clamp = (a: number, min = 0, max = 1) => 
   Math.min(max, Math.max(min, a));
 
@@ -14,4 +24,24 @@ export const range = (x1: number, y1: number, x2: number, y2: number, a: number)
 
 export const choose = <T>(arr: T[]) => {
   return arr[randomInt(arr.length)];
+}
+
+/**
+ * Return evenly spaced number over an interval inclusive of start and stop.
+ **/
+export const linspace = (n_steps: number, start = 0, stop = 1) => {
+  let step = (stop - start) / (n_steps - 1);
+  let space = [];
+  for (let i = 0; i < n_steps; i++) {
+    space.push(start + i * step);
+  }
+  return space;
+}
+
+export function radiansToDegrees (n: number) {
+  return (n * 180) / Math.PI;
+}
+
+export function degreesToRadians(n: number) {
+  return n * Math.PI / 180;
 }

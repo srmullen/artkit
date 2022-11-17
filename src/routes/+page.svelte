@@ -8,7 +8,7 @@
   <title>Locust Mural</title>
 </svelte:head>
 
-<h1>Artkit</h1>
+<h1>Locust Mural</h1>
 
 <Canvas 
   size={paper_sizes.a4} 
