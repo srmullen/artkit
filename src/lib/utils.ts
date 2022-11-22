@@ -45,3 +45,18 @@ export function radiansToDegrees (n: number) {
 export function degreesToRadians(n: number) {
   return n * Math.PI / 180;
 }
+
+export function timer (fn: Function) {
+  const now = Date.now();
+  const ret = fn();
+  if (ret instanceof Promise) {
+    ret.then(() => {
+      const dur = Date.now() - now;
+      console.log('Duration: ', dur);
+    });
+  } else {
+    const dur = Date.now() - now;
+    console.log('Duration: ', dur);
+  }
+  return ret;
+}

@@ -10,6 +10,7 @@ declare namespace App {
 
 
 declare module 'convert-length';
+declare module 'voronoi';
 
 interface SketchOpts {
   width: number,
