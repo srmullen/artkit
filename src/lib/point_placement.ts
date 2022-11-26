@@ -47,6 +47,6 @@ export function relaxation_displacement(points: paper.Point[], opts?: Partial<Re
     [displaced, changed] = relaxation_displacement_step(displaced, opts);
     step++;
   }
-  console.log('steps', step);
+  // console.log('steps', step);
   return displaced;
 }

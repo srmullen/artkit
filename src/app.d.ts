@@ -21,3 +21,9 @@ interface PaperSize {
 	units: string,
 	dimensions: number[],
 }
+
+interface PaperAnimationFrame {
+	delta: number,
+	time: number,
+	counter: number,
+}
