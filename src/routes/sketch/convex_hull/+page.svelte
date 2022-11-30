@@ -1,15 +1,10 @@
 <script lang="ts">
   import Canvas from '$lib/components/Canvas.svelte';
-  // import sketch from '$lib/sketch/spirals';
-  import sketch from '$lib/sketch/voronoi';
+  import * as sketches from '$lib/sketch/convex_hull';
   import paper_sizes from '$lib/paper_sizes';
+
+  let sketch = Object.values(sketches)[0].sketch;
 </script>
-
-<svelte:head>
-  <title>Locust Mural</title>
-</svelte:head>
-
-<h1>Locust Mural</h1>
 
 <Canvas 
   size={paper_sizes.a5}

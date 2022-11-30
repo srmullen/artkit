@@ -6,7 +6,7 @@
   async function saveAsSvg() {
     const svg = toSVG();
     const content = pako.deflate(svg);
-    const res = await fetch('/save/test.svg', {
+    const res = await fetch('/api/save/test.svg', {
       method: 'POST',
       headers: {
         'Content-Type': 'image/svg+xml',
