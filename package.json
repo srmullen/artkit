@@ -13,6 +13,8 @@
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@types/delaunator": "^5.0.0",
+		"@types/lodash.sortby": "^4.7.7",
+		"@types/noisejs": "^0.0.28",
 		"@types/pako": "^2.0.0",
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.7.1",
@@ -25,7 +27,9 @@
 	"dependencies": {
 		"convert-length": "^1.0.1",
 		"delaunator": "^5.0.0",
+		"lodash.sortby": "^4.7.0",
 		"mathjs": "^11.3.3",
+		"noisejs": "^2.1.0",
 		"pako": "^2.1.0",
 		"paper": "^0.12.17",
 		"voronoi": "^1.0.0"

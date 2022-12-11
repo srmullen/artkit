@@ -1,7 +1,7 @@
 <script lang="ts">
   import Canvas from '$lib/components/Canvas.svelte';
   // import sketch from '$lib/sketch/spirals';
-  import sketch from '$lib/sketch/voronoi';
+  import sketch from '$lib/sketch/delauny';
   import paper_sizes from '$lib/paper_sizes';
 </script>
 

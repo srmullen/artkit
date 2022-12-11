@@ -27,3 +27,11 @@ interface PaperAnimationFrame {
 	time: number,
 	counter: number,
 }
+
+interface SketchDescription {
+	paperSize?: PaperSize,
+	orientation?: 'landscape' | 'portrait',
+	title?: string,
+	desc?: string,
+	sketch: (opts: SketchOpts) => void,
+}

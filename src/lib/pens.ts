@@ -377,7 +377,7 @@ export function info (pen: Pens) {
 const layers: Partial<Record<Pens, paper.Layer>> = {};
 // window.penLayers = layers;
 
-export function withPen (pen: Pens, fn: <T>(p: PenInfo) => T) {
+export function withPen (pen: Pens, fn: <T>(p: PenInfo) => T | void) {
   const previousLayer = paper.project.activeLayer;
   if (!layers[pen]) {
     layers[pen] = new Layer({name: pen});

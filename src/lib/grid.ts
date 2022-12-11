@@ -72,6 +72,6 @@ export class Grid<T> {
   }
 
   at(row: number, col: number): T {
-    return this.rows[row][col];
+    return this.rows[row]?.[col];
   }
 }

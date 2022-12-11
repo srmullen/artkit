@@ -1,9 +1,11 @@
 import { random_points, relaxation_displacement } from "$lib/point_placement";
 import paper, { Point, Path } from "paper";
+import { randomInt } from "mathjs";
 import Voronoi from 'voronoi';
 import Delaunator from 'delaunator';
 import { timer, choose } from '$lib/utils';
-import { randomInt } from "mathjs";
+import { giftWrap } from "$lib/convex_hull";
+
 
 const voronoiSketch = ({ width, height }: SketchOpts) => {
   let points = random_points(300, width, height);
@@ -225,12 +227,52 @@ function shapesFromDelaunyTriangulation({ width, height }: SketchOpts) {
 
   let n_shapes = 5
   for (let i = 0; i < n_shapes; i++) {
-    let shape = createShape(triangles, randomInt(0, triangles.length));
-    // @ts-ignore
-    shape.fillColor = 'green';
+    // let path = createShape(triangles, randomInt(0, triangles.length));
+    // // @ts-ignore
+    // path.fillColor = 'purple';
+
+    let segments = createConvexHull(triangles, randomInt(0, triangles.length));
+    new Path({
+      segments,
+      fillColor: 'green',
+    });
   }
 
   function createShape(tris: Triangle[], startIdx: number) {
+    let shape = [startIdx]; // shape will contain the indexes of the triagles that will belong to the shape.
+    for (let i = 0; i < 5; i++) {
+      let tri: Triangle = tris[shape[shape.length-1]];
+      let sib = choose(tri.siblings);
+      if (!shape.includes(sib)) {
+        shape.push(sib);
+      }
+    }
+
+    let shapeTris = shape.map(idx => tris[idx]);
+    // // Create the paths and then join them together
+    // // Another option could be to use a convex-hull algorithm
+    let paths = shapeTris.map(tri => new Path({
+      segments: tri.coords,
+      fillColor: 'blue',
+    }));
+    paths.map(path => path.translate([200, 0]))
+
+    let path = paths.reduce((shape, path) => {
+      let item = shape.unite(path);
+      const ret = new Path(item.pathData);
+      item.remove();
+      return ret;
+    });
+    // @ts-ignore
+    // path.fillColor = 'purple';
+
+    // paths.forEach(path => path.translate([200, 100]));
+    paths.forEach(path => path.remove());
+
+    return path;    
+  }
+
+  function createConvexHull(tris: Triangle[], startIdx: number) {
     let shape = [startIdx]; // shape will contain the indexes of the triagles that will belong to the shape.
     // shape.push(0);
     for (let i = 0; i < 5; i++) {
@@ -241,31 +283,19 @@ function shapesFromDelaunyTriangulation({ width, height }: SketchOpts) {
       }
     }
 
-    console.log(shape);
-    let shapeTris = shape.map(idx => tris[idx]);
-    // Create the paths and then join them together
-    // Another option could be to use a convex-hull algorithm
-    let paths = shapeTris.map(tri => new Path({
-      segments: tri.coords,
-      // fillColor: 'blue',
-      // strokeColor: 'black',
-      // strokeWidth: 4,
-    }));
-    let path = paths.reduce((shape, path) => {
-      console.log(shape, path);
-      let item = shape.unite(path);
-      const ret = new Path(item.pathData);
-      item.remove();
-      return ret;
-    });
-    // @ts-ignore
-    // path.fillColor = 'purple';
+    // let shapeTris = shape.map(idx => tris[idx]);
+    // let paths = shapeTris.map(tri => new Path({
+    //   segments: tri.coords,
+    //   fillColor: 'blue',
+    // }));
+    // paths.map(path => path.translate([200, 0]))
 
-    paths.forEach(path => path.translate([200, 100]));
-    console.log(paths);
-    paths.forEach(path => path.remove());
-    
-    return path;
+    let points = shape.reduce((acc, idx) => {
+      let tri = tris[idx];
+      return acc.concat(tri.coords);
+    }, [] as paper.Point[]);
+
+    return giftWrap(points);
   }
 
   function is_sibling(t1: paper.Point[], t2: paper.Point[]) {

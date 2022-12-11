@@ -1,5 +1,9 @@
 import { randomInt } from 'mathjs';
 
+export const isFunction = (f: any): f is Function => {
+  return typeof f === 'function';
+}
+
 export const lerp = (x: number, y: number, a: number) => 
   x * (1 - a) + y * a;
 
@@ -57,6 +61,18 @@ export function timer (fn: Function) {
   } else {
     const dur = Date.now() - now;
     console.log('Duration: ', dur);
+  }
+  return ret;
+}
+
+export function processOptions (options: Record<string, any>, input?: any) {
+  const ret: Record<string, any> = {};
+  for (let name in options) {
+    if (isFunction(options[name])) {
+      ret[name] = options[name](input);
+    } else {
+      ret[name] = options[name];
+    }
   }
   return ret;
 }

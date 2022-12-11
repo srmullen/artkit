@@ -1,5 +1,6 @@
 import { Point } from 'paper';
 import { random } from 'mathjs';
+import { isFunction } from '$lib/utils';
 
 export function random_points(n_points:number, width: number, height: number) {
   let points = [];
@@ -15,15 +16,18 @@ interface RelaxationDisplacementOpts {
   stepDistance: number // The size of the step taken away from the point.
 }
 
+// TODO: Optimization - Use grid to collect points in certain distance rather than checking every point.
 function relaxation_displacement_step(
   points: paper.Point[], 
-  { distance = 20, stepDistance = 1 }: Partial<RelaxationDisplacementOpts> = {}
+  // { distance = 20, stepDistance = 1 }: Partial<RelaxationDisplacementOpts> = {}
+  optsFn: (p: paper.Point) => Partial<RelaxationDisplacementOpts>
 ): [paper.Point[], boolean] {
   const ret = [];
   let changed = false;
   for (let i = 0; i < points.length; i++) {
     let point = points[i];
     let force = new Point(0, 0);
+    let { distance = 20, stepDistance = 1 } = optsFn(point);
     for (let j = 0; j < points.length; j++) {
       if (i !== j) {
         const vec = points[j].subtract(point);
@@ -38,15 +42,19 @@ function relaxation_displacement_step(
   return [ret, changed];
 }
 
-export function relaxation_displacement(points: paper.Point[], opts?: Partial<RelaxationDisplacementOpts>) {
+export function relaxation_displacement(
+  points: paper.Point[], 
+  opts?: Partial<RelaxationDisplacementOpts> | ((p: paper.Point) => Partial<RelaxationDisplacementOpts>)
+) {
   const max_steps = 10000;
   let step = 0;
   let changed = true;
   let displaced = points;
+  let optsFn = isFunction(opts) ? opts : (_: paper.Point) => opts || {};
   while (changed && step < max_steps) {
-    [displaced, changed] = relaxation_displacement_step(displaced, opts);
+    console.log('step: ', step);
+    [displaced, changed] = relaxation_displacement_step(displaced, optsFn);
     step++;
   }
-  // console.log('steps', step);
   return displaced;
 }
