@@ -3,7 +3,7 @@
   import { sketches } from '$lib/sketch/grid_experiments';
   import paper_sizes from '$lib/paper_sizes';
 
-  let sketch = sketches[1];
+  let sketch = sketches.find(sketch => sketch.default) || sketches[0];
 </script>
 
 <Canvas 

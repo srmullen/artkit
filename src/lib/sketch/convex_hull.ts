@@ -32,7 +32,7 @@ function grahamScanSketch({ width, height }: SketchOpts) {
   grahamScan(points);
 }
 
-export const sketches = [
+export const sketches: SketchDescription[] = [
   {
     title: 'Gift Wrapping Algorithm',
     desc: `An algorithm for find the the convex hull of a set of points. In the 2D case also known as Jarvis Match Algorithm. O(nh) where n is the
@@ -45,4 +45,4 @@ export const sketches = [
     desc: `Finds the convex hull of a set of points with time complexity of O(n log n). Uses a stack to detect and remove concavities in the boundary`,
     sketch: grahamScanSketch,
   }
-]
+];

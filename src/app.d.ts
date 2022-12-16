@@ -34,4 +34,5 @@ interface SketchDescription {
 	title?: string,
 	desc?: string,
 	sketch: (opts: SketchOpts) => void,
+	default?: boolean,
 }

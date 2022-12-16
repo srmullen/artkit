@@ -50,7 +50,7 @@ export function degreesToRadians(n: number) {
   return n * Math.PI / 180;
 }
 
-export function timer (fn: Function) {
+export function timer<T>(fn: (args?: any[]) => T) {
   const now = Date.now();
   const ret = fn();
   if (ret instanceof Promise) {

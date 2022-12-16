@@ -75,3 +75,44 @@ export class Grid<T> {
     return this.rows[row]?.[col];
   }
 }
+
+type Cell = Set<paper.Point>;
+
+/**
+ * The ProximityGrid holds a collection of points. 
+ * Is used to get points that are within a certain distance to a given point.
+ */
+export class ProximityGrid {
+  // Should this be a grid or a treelike structure?
+  // Points will need the ability to move.
+  // How will the datastructure be updated?
+
+  from: paper.Point;
+  to: paper.Point;
+  private grid: Cell[][];
+
+  /**
+   * 
+   * @param from - top-left of the bounding rectangle.
+   * @param to - bottom-right of the bounding rectangle.
+   * @param size - the size (px) of each cell in the grid.
+   */
+  constructor(from: paper.Point, to: paper.Point, size: number) {
+    this.from = from;
+    this.to = to;
+
+    let dim = to.subtract(from);
+
+    let nx = Math.ceil(dim.x / size);
+    let ny = Math.ceil(dim.y / size);
+    let grid: Cell[][] = [];
+    for (let i = 0; i < nx; i++) {
+      let column: Cell[] = [];
+      for (let j = 0; j < ny; j++) {
+        column.push(new Set<paper.Point>());
+      }
+      grid.push(column);
+    }
+    this.grid = grid;
+  }
+}

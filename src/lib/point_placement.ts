@@ -52,7 +52,7 @@ export function relaxation_displacement(
   let displaced = points;
   let optsFn = isFunction(opts) ? opts : (_: paper.Point) => opts || {};
   while (changed && step < max_steps) {
-    console.log('step: ', step);
+    // console.log('step: ', step);
     [displaced, changed] = relaxation_displacement_step(displaced, optsFn);
     step++;
   }
