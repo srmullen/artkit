@@ -1,4 +1,4 @@
-import paper, { Path, Color } from 'paper';
+import paper, { Path, Color, Rectangle } from 'paper';
 import { Grid, ProximityGrid } from '$lib/grid';
 // @ts-ignore
 import { Noise } from 'noisejs';
@@ -113,15 +113,19 @@ function relaxationDisplacementOptimizationSketch({ width, height }: SketchOpts)
   });
 }
 
-interface RelaxationDisplacementOpts {
-  distance: number, // The distance at which points will begin ignoring each other.
-  stepDistance: number // The size of the step taken away from the point.
-}
-
 function relaxationDisplacementAnimationSketch({ width, height }: SketchOpts) {
   let points = random_points(500, width, height);
 
-  let gen = relaxation_displacement_gen(points, { distance: 50, stepDistance: 1 });
+  let rect = new Rectangle({
+    from: [0, 0],
+    to: [width, height],
+  });
+
+  let gen = relaxation_displacement_gen(
+    points, 
+    { distance: 50, stepDistance: 1 },
+    (p) => !rect.contains(p)
+  );
 
   let paths = points.map(point => {
     return new Path.Circle({
@@ -140,7 +144,7 @@ function relaxationDisplacementAnimationSketch({ width, height }: SketchOpts) {
       paper.view.pause();
       return;
     }
-
+    console.log(next.value.length);
     paths.map(path => path.remove());
     paths = next.value.map(points => {
       return new Path.Circle({

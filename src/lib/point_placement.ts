@@ -13,14 +13,15 @@ export function random_points(n_points:number, width: number, height: number) {
 
 interface RelaxationDisplacementOpts {
   distance: number, // The distance at which points will begin ignoring each other.
-  stepDistance: number // The size of the step taken away from the point.
+  stepDistance: number, // The size of the step taken away from the point.
 }
 
 // TODO: Optimization - Use grid to collect points in certain distance rather than checking every point.
 function relaxation_displacement_step(
   points: paper.Point[], 
   // { distance = 20, stepDistance = 1 }: Partial<RelaxationDisplacementOpts> = {}
-  optsFn: (p: paper.Point) => Partial<RelaxationDisplacementOpts>
+  optsFn: (p: paper.Point) => Partial<RelaxationDisplacementOpts>,
+  cull?: (p: paper.Point) => boolean
 ): [paper.Point[], boolean] {
   const ret = [];
   let changed = false;
@@ -37,14 +38,21 @@ function relaxation_displacement_step(
         }
       }
     }
-    ret.push(point.add(force));
+    let moved = point.add(force);
+    if (cull && cull(moved)) {
+      // Don't add the point to the array
+      continue;
+    } else {
+      ret.push(moved);
+    }
   }
   return [ret, changed];
 }
 
 export function relaxation_displacement(
   points: paper.Point[], 
-  opts?: Partial<RelaxationDisplacementOpts> | ((p: paper.Point) => Partial<RelaxationDisplacementOpts>)
+  opts?: Partial<RelaxationDisplacementOpts> | ((p: paper.Point) => Partial<RelaxationDisplacementOpts>),
+  cull?: (p: paper.Point) => boolean
 ) {
   const max_steps = 10000;
   let step = 0;
@@ -52,8 +60,7 @@ export function relaxation_displacement(
   let displaced = points;
   let optsFn = isFunction(opts) ? opts : (_: paper.Point) => opts || {};
   while (changed && step < max_steps) {
-    // console.log('step: ', step);
-    [displaced, changed] = relaxation_displacement_step(displaced, optsFn);
+    [displaced, changed] = relaxation_displacement_step(displaced, optsFn, cull);
     step++;
   }
   return displaced;
@@ -61,7 +68,8 @@ export function relaxation_displacement(
 
 export function* relaxation_displacement_gen(
   points: paper.Point[], 
-  opts?: Partial<RelaxationDisplacementOpts> | ((p: paper.Point) => Partial<RelaxationDisplacementOpts>)
+  opts?: Partial<RelaxationDisplacementOpts> | ((p: paper.Point) => Partial<RelaxationDisplacementOpts>),
+  cull?: (p: paper.Point) => boolean
 ) {
   const max_steps = 10000;
   let step = 0;
@@ -69,7 +77,7 @@ export function* relaxation_displacement_gen(
   let displaced = points;
   let optsFn = isFunction(opts) ? opts : (_: paper.Point) => opts || {};
   while (changed && step < max_steps) {
-    [displaced, changed] = relaxation_displacement_step(displaced, optsFn);
+    [displaced, changed] = relaxation_displacement_step(displaced, optsFn, cull);
     yield displaced;
     step++;
   }
