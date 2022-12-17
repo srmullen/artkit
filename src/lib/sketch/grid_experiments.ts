@@ -4,7 +4,7 @@ import { Grid, ProximityGrid } from '$lib/grid';
 import { Noise } from 'noisejs';
 import { Point } from 'paper';
 import { create, all } from 'mathjs';
-import { relaxation_displacement, random_points } from '$lib/point_placement';
+import { relaxation_displacement, relaxation_displacement_gen, random_points } from '$lib/point_placement';
 import { lerp, range, timer, isFunction } from '$lib/utils';
 
 let math = create(all, {
@@ -119,51 +119,9 @@ interface RelaxationDisplacementOpts {
 }
 
 function relaxationDisplacementAnimationSketch({ width, height }: SketchOpts) {
-  function relaxation_displacement_step(
-    points: paper.Point[], 
-    // { distance = 20, stepDistance = 1 }: Partial<RelaxationDisplacementOpts> = {}
-    optsFn: (p: paper.Point) => Partial<RelaxationDisplacementOpts>
-  ): [paper.Point[], boolean] {
-    const ret = [];
-    let changed = false;
-    for (let i = 0; i < points.length; i++) {
-      let point = points[i];
-      let force = new Point(0, 0);
-      let { distance = 20, stepDistance = 1 } = optsFn(point);
-      for (let j = 0; j < points.length; j++) {
-        if (i !== j) {
-          const vec = points[j].subtract(point);
-          if (vec.length < distance) {
-            force = force.subtract(vec.normalize().multiply(stepDistance));
-            changed = true;
-          }
-        }
-      }
-      ret.push(point.add(force));
-    }
-    return [ret, changed];
-  }
-  
-   function* relaxation_displacement(
-    points: paper.Point[], 
-    opts?: Partial<RelaxationDisplacementOpts> | ((p: paper.Point) => Partial<RelaxationDisplacementOpts>)
-  ) {
-    const max_steps = 10000;
-    let step = 0;
-    let changed = true;
-    let displaced = points;
-    let optsFn = isFunction(opts) ? opts : (_: paper.Point) => opts || {};
-    while (changed && step < max_steps) {
-      [displaced, changed] = relaxation_displacement_step(displaced, optsFn);
-      yield displaced;
-      step++;
-    }
-    return displaced;
-  }
-
   let points = random_points(500, width, height);
 
-  let gen = relaxation_displacement(points, { distance: 50, stepDistance: 1 });
+  let gen = relaxation_displacement_gen(points, { distance: 50, stepDistance: 1 });
 
   let paths = points.map(point => {
     return new Path.Circle({

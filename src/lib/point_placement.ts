@@ -58,3 +58,24 @@ export function relaxation_displacement(
   }
   return displaced;
 }
+
+export function* relaxation_displacement_gen(
+  points: paper.Point[], 
+  opts?: Partial<RelaxationDisplacementOpts> | ((p: paper.Point) => Partial<RelaxationDisplacementOpts>)
+) {
+  const max_steps = 10000;
+  let step = 0;
+  let changed = true;
+  let displaced = points;
+  let optsFn = isFunction(opts) ? opts : (_: paper.Point) => opts || {};
+  while (changed && step < max_steps) {
+    [displaced, changed] = relaxation_displacement_step(displaced, optsFn);
+    yield displaced;
+    step++;
+  }
+  return displaced;
+}
+
+function proximity_culling(n_points: number, point_generator: () => paper.Point) {
+
+}
