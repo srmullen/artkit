@@ -4,7 +4,7 @@ import { Grid, ProximityGrid } from '$lib/grid';
 import { Noise } from 'noisejs';
 import { Point } from 'paper';
 import { create, all } from 'mathjs';
-import { relaxation_displacement, relaxation_displacement_gen, random_points } from '$lib/point_placement';
+import { random_points, random_point, relaxation_displacement, relaxation_displacement_gen, proximity_culling } from '$lib/point_placement';
 import { lerp, range, timer, isFunction } from '$lib/utils';
 
 let math = create(all, {
@@ -144,7 +144,6 @@ function relaxationDisplacementAnimationSketch({ width, height }: SketchOpts) {
       paper.view.pause();
       return;
     }
-    console.log(next.value.length);
     paths.map(path => path.remove());
     paths = next.value.map(points => {
       return new Path.Circle({
@@ -154,18 +153,18 @@ function relaxationDisplacementAnimationSketch({ width, height }: SketchOpts) {
       });
     });
   }
+}
 
-  // let steps = [...gen];
-  // console.log(steps);
-  // steps.forEach(points => {
-  //   points.forEach(point => {
-  //     new Path.Circle({
-  //       center: point,
-  //       fillColor: 'red',
-  //       radius: 4,
-  //     });
-  //   });
-  // });
+function proximityCullingSketch({ width, height }: SketchOpts) {
+  let points = proximity_culling(100, 60, () => random_point([0, 0], [width, height]));
+
+  points.forEach(point => {
+    new Path.Circle({
+      center: point,
+      fillColor: 'red',
+      radius: 5,
+    });
+  });
 }
 
 export const sketches: SketchDescription[] = [
@@ -184,6 +183,10 @@ export const sketches: SketchDescription[] = [
   {
     title: 'Relaxation Displacement Animation',
     sketch: relaxationDisplacementAnimationSketch,
-    default: true,
   },
+  {
+    title: 'Proximity Culling',
+    sketch: proximityCullingSketch,
+    default: true,
+  }
 ];

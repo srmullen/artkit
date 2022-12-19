@@ -2,10 +2,16 @@ import { Point } from 'paper';
 import { random } from 'mathjs';
 import { isFunction } from '$lib/utils';
 
+export function random_point(from: paper.PointLike, to: paper.PointLike) {
+  let min = new Point(from);
+  let max = new Point(to);
+  return new Point(random(min.x, max.x), random(min.y, max.y));
+}
+
 export function random_points(n_points:number, width: number, height: number) {
   let points = [];
   for (let i = 0; i < n_points; i++) {
-    points.push(new Point(random(0, width), random(0, height)));
+    points.push(random_point([0, 0], [width, height]));
   }
 
   return points;
@@ -84,6 +90,25 @@ export function* relaxation_displacement_gen(
   return displaced;
 }
 
-function proximity_culling(n_points: number, point_generator: () => paper.Point) {
-
+/**
+ * 
+ * @param n_points - The number of points to attempt to create
+ * @param min - The minimum distance between pixels.
+ * @param point_generator - Function for generating points,
+ * @param sentinel - The number of iterations after which to stop trying to place any more points
+ * @returns 
+ */
+export function proximity_culling(n_points: number, min: number, point_generator: (..._: any[]) => paper.Point = random_point, sentinel = 100000) {
+  let points: paper.Point[] = [];
+  let i = 0;
+  while (points.length < n_points && i < sentinel) {
+    let candidate = point_generator()
+    if (points.every(point => candidate.getDistance(point) > min)) {
+      points.push(candidate);
+    }
+    i++;
+  }
+  return points;
 }
+
+export function poisson_disc() {}
