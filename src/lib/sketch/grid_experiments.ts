@@ -4,7 +4,7 @@ import { Grid, ProximityGrid } from '$lib/grid';
 import { Noise } from 'noisejs';
 import { Point } from 'paper';
 import { create, all } from 'mathjs';
-import { random_points, random_point, relaxation_displacement, relaxation_displacement_gen, proximity_culling } from '$lib/point_placement';
+import { random_points, random_point, relaxation_displacement, relaxation_displacement_gen, proximity_culling, poisson_disc } from '$lib/point_placement';
 import { lerp, range, timer, isFunction } from '$lib/utils';
 
 let math = create(all, {
@@ -167,6 +167,18 @@ function proximityCullingSketch({ width, height }: SketchOpts) {
   });
 }
 
+function poissonDiscSketch({ width, height }: SketchOpts) {
+  let points = poisson_disc(20, 30, width, height);
+
+  points.forEach(point => {
+    new Path.Circle({
+      center: point,
+      radius: 2,
+       fillColor: 'red',
+    });
+  });
+}
+
 export const sketches: SketchDescription[] = [
   {
     title: 'Grid noise',
@@ -187,6 +199,10 @@ export const sketches: SketchDescription[] = [
   {
     title: 'Proximity Culling',
     sketch: proximityCullingSketch,
+  },
+  {
+    title: 'Poisson Disc',
+    sketch: poissonDiscSketch,
     default: true,
   }
 ];
