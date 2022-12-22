@@ -113,72 +113,6 @@ function relaxationDisplacementOptimizationSketch({ width, height }: SketchOpts)
   });
 }
 
-function relaxationDisplacementAnimationSketch({ width, height }: SketchOpts) {
-  let points = random_points(500, width, height);
-
-  let rect = new Rectangle({
-    from: [0, 0],
-    to: [width, height],
-  });
-
-  let gen = relaxation_displacement_gen(
-    points, 
-    { distance: 50, stepDistance: 1 },
-    (p) => !rect.contains(p)
-  );
-
-  let paths = points.map(point => {
-    return new Path.Circle({
-      center: point,
-      fillColor: 'red',
-      radius: 4,
-    });
-  });
-
-  paper.view.onFrame = (frame: PaperAnimationFrame) => {
-    let next = gen.next();
-    if (next.done) {
-      paths.forEach(path => {
-        path.fillColor = new Color('blue');
-      });
-      paper.view.pause();
-      return;
-    }
-    paths.map(path => path.remove());
-    paths = next.value.map(points => {
-      return new Path.Circle({
-        center: points,
-        radius: 4,
-        fillColor: 'red',
-      });
-    });
-  }
-}
-
-function proximityCullingSketch({ width, height }: SketchOpts) {
-  let points = proximity_culling(100, 60, () => random_point([0, 0], [width, height]));
-
-  points.forEach(point => {
-    new Path.Circle({
-      center: point,
-      fillColor: 'red',
-      radius: 5,
-    });
-  });
-}
-
-function poissonDiscSketch({ width, height }: SketchOpts) {
-  let points = poisson_disc(20, 30, width, height);
-
-  points.forEach(point => {
-    new Path.Circle({
-      center: point,
-      radius: 2,
-       fillColor: 'red',
-    });
-  });
-}
-
 export const sketches: SketchDescription[] = [
   {
     title: 'Grid noise',
@@ -192,17 +126,4 @@ export const sketches: SketchDescription[] = [
     title: 'Relaxation Displacement Optimization',
     sketch: relaxationDisplacementOptimizationSketch,
   },
-  {
-    title: 'Relaxation Displacement Animation',
-    sketch: relaxationDisplacementAnimationSketch,
-  },
-  {
-    title: 'Proximity Culling',
-    sketch: proximityCullingSketch,
-  },
-  {
-    title: 'Poisson Disc',
-    sketch: poissonDiscSketch,
-    default: true,
-  }
 ];

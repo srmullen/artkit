@@ -7,7 +7,12 @@ import { choose } from '$lib/utils';
 
 // Bridson's algorithm - https://sighack.com/post/poisson-disk-sampling-bridsons-algorithm
 // https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
-export function poisson_disc(radius: number, k: number, width: number, height: number, sentinel = Infinity) {
+export function poisson_disc(
+  radius: number, 
+  k: number, 
+  width: number, height: number, 
+  sentinel = Infinity
+) {
   let N = 2; // Dimensions
   let points: paper.Point[] = [];
   let active: paper.Point[] = [];
