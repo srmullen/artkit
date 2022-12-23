@@ -6,8 +6,10 @@
   let sketch = sketches.find(sketch => sketch.default) || sketches[0];
 </script>
 
-<Canvas 
-  size={sketch.paperSize || paper_sizes.a5}
-  orientation={sketch.orientation || 'portrait'}
-  sketch={sketch.sketch}
-/>
+<div class="m-auto">
+  <Canvas 
+    size={sketch.paperSize || paper_sizes.a5}
+    orientation={sketch.orientation || 'portrait'}
+    sketch={sketch.sketch}
+  />
+</div>

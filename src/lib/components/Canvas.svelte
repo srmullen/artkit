@@ -39,14 +39,12 @@
 </script>
 
 <canvas 
+  class="mx-auto mt-8 shadow-md bg-white"
   bind:this={canvas}
   {width} 
   {height}
 ></canvas>
-<SaveButton {toSVG} />
 
-<style>
-  canvas {
-    border: 1px solid black;
-  }
-</style>
+<div class="flex justify-center mt-8">
+  <SaveButton {toSVG} />
+</div>

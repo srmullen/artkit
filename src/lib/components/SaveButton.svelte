@@ -16,4 +16,7 @@
   }
 </script>
 
-<button on:click={saveAsSvg}>Save as SVG</button>
+<button 
+  on:click={saveAsSvg}
+  class="bg-slate-600 text-white rounded px-4 py-3 font-bold"
+>Save as SVG</button>
