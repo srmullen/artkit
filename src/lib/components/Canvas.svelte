@@ -32,7 +32,7 @@
     sketch({ width, height });
   });
 
-  $: {
+  $: if (paper.project) {
     paper.project.clear();
 
     sketch({ width, height });
