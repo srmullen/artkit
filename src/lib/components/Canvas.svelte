@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import convert from 'convert-length';
   import paper from 'paper';
-  import SaveButton from '$lib/components/SaveButton.svelte';
 
   export let size: PaperSize;
   export let sketch: (opts: SketchOpts) => void;
@@ -27,15 +26,17 @@
   }
   [width, height] = PAPER_SIZE;
 
-  const toSVG = () => { 
-    return paper.project.exportSVG({ asString: true, embedImages: false }) as string; 
-  }
-
   onMount(() => {
     paper.setup(canvas);
 
     sketch({ width, height });
   });
+
+  $: {
+    paper.project.clear();
+
+    sketch({ width, height });
+  }
 </script>
 
 <canvas 
@@ -44,7 +45,3 @@
   {width} 
   {height}
 ></canvas>
-
-<div class="flex justify-center mt-8">
-  <SaveButton {toSVG} />
-</div>
